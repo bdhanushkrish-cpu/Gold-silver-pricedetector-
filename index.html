@@ -1,0 +1,227 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="kn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jewelry Value & Wastage Calculator</title>
+    <!-- Tailwind CSS for sleek styling -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body {
+            background: radial-gradient(circle at 0% 0%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 100% 100%, rgba(192, 192, 192, 0.15) 0%, transparent 50%),
+                        #0f172a;
+            min-height: 100vh;
+            color: #f8fafc;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 flex flex-col items-center justify-between min-h-screen">
+
+    <div class="w-full max-w-4xl flex flex-col items-center flex-grow">
+        <!-- HEADER SECTION WITH BYLINE -->
+        <header class="text-center mb-8 max-w-xl">
+            <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight bg-gradient-to-r from-amber-400 via-slate-200 to-amber-200 bg-clip-text text-transparent">
+                Jewelry Bill Calculator
+            </h1>
+            <p class="text-slate-400 text-sm mt-2">ಬಂಗಾರ ಮತ್ತು ಬೆಳ್ಳಿಯ ನಿಖರವಾದ ಲೆಕ್ಕಾಚಾರ ಇಲ್ಲಿದೆ.</p>
+            <p class="text-xs text-amber-400/80 mt-1 font-medium tracking-wide">Developed by Dhanush BK</p>
+        </header>
+
+        <!-- MAIN CALCULATORS GRID -->
+        <main class="w-full grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            
+            <!-- SECTION 1: TOTAL VALUE CALCULATOR -->
+            <section class="glass-panel rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center space-x-3 mb-6">
+                        <span class="text-2xl">💰</span>
+                        <h2 class="text-xl font-bold text-amber-300">1. Value Calculator</h2>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <!-- Weight Input with Unit Selector -->
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Weight</label>
+                            <div class="flex space-x-2">
+                                <input type="number" id="valWeight" placeholder="0.00" step="any" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-amber-400">
+                                <select id="valUnit" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-sm text-amber-200 focus:outline-none">
+                                    <option value="g" selected>g</option>
+                                    <option value="mg">mg</option>
+                                    <option value="kg">kg</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Rate per gram -->
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Rate Today (per gram)</label>
+                            <input type="number" id="valRate" placeholder="₹ / gram" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 focus:outline-none focus:border-amber-400">
+                        </div>
+
+                        <!-- Grid Layout for Charges -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Making Charges (₹)</label>
+                                <input type="number" id="valMaking" placeholder="Optional" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 focus:outline-none focus:border-amber-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Wastage (%)</label>
+                                <input type="number" id="valWastage" placeholder="Optional" step="any" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 focus:outline-none focus:border-amber-400">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">GST (%)</label>
+                                <input type="number" id="valGst" placeholder="Standard 3%" value="3" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 focus:outline-none focus:border-amber-400">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Old Gold Exchange (₹)</label>
+                                <input type="number" id="valOldGold" placeholder="Optional Deduction" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 focus:outline-none focus:border-amber-400">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <button onclick="calculateTotalValue()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold py-3 px-4 rounded-xl transition duration-200 shadow-lg transform hover:-translate-y-0.5">
+                        Calculate Total
+                    </button>
+
+                    <!-- Result Breakdown Display -->
+                    <div id="valueResult" class="hidden mt-6 p-4 rounded-xl bg-slate-950/40 border border-slate-800 space-y-2 text-sm">
+                        <div class="flex justify-between"><span class="text-slate-400">Base Metal Value:</span><span id="resBase">₹0.00</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Wastage Charge:</span><span id="resWastageCost">₹0.00</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">Making Charges:</span><span id="resMaking">₹0.00</span></div>
+                        <div class="flex justify-between"><span class="text-slate-400">GST Value:</span><span id="resGst">₹0.00</span></div>
+                        <div class="flex justify-between text-emerald-400"><span class="font-medium">Old Gold Deduction:</span><span id="resOld">-₹0.00</span></div>
+                        <hr class="border-slate-800 my-2">
+                        <div class="flex justify-between text-base font-bold text-amber-400"><span>Final To Pay:</span><span id="resFinal">₹0.00</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: WASTAGE WEIGHT CALCULATOR -->
+            <section class="glass-panel rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center space-x-3 mb-6">
+                        <span class="text-2xl">⚖️</span>
+                        <h2 class="text-xl font-bold text-slate-300">2. Wastage Calculator</h2>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Weight Input -->
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Net Weight</label>
+                            <div class="flex space-x-2">
+                                <input type="number" id="wasteWeight" placeholder="0.00" step="any" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 focus:outline-none focus:border-slate-400">
+                                <select id="wasteUnit" class="bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-sm text-slate-300 focus:outline-none">
+                                    <option value="g" selected>g</option>
+                                    <option value="mg">mg</option>
+                                    <option value="kg">kg</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Wastage Percentage Input -->
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Wastage (%)</label>
+                            <input type="number" id="wastePercent" placeholder="e.g., 6.6" step="any" class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 focus:outline-none focus:border-slate-400">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <button onclick="calculatePureWastage()" class="w-full bg-gradient-to-r from-slate-400 to-slate-500 hover:from-slate-300 hover:to-slate-400 text-slate-950 font-bold py-3 px-4 rounded-xl transition duration-200 shadow-lg transform hover:-translate-y-0.5">
+                        Calculate Wastage Weight
+                    </button>
+
+                    <!-- Wastage Result Display -->
+                    <div id="wastageResult" class="hidden mt-6 p-4 rounded-xl bg-slate-950/40 border border-slate-800 space-y-2 text-sm text-center">
+                        <p class="text-slate-400">Wastage Added Weight:</p>
+                        <p class="text-2xl font-black text-slate-200"><span id="resWasteWeight">0.000</span> <span class="text-sm font-normal text-slate-400" id="resWasteUnitLabel">g</span></p>
+                        <p class="text-xs text-slate-500 mt-1" id="resTotalWeightCombined"></p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- FOOTER SIGNATURE -->
+    <footer class="w-full text-center py-4 border-t border-slate-800/60 mt-auto">
+        <p class="text-xs text-slate-500 tracking-wide">
+            &copy; 2026 Crafted with precision by <span class="text-slate-400 font-semibold hover:text-amber-400 transition-colors duration-200">Dhanush BK</span>. All Rights Reserved.
+        </p>
+    </footer>
+
+    <!-- Calculation Engine Scripts -->
+    <script>
+        function getWeightInGrams(weight, unit) {
+            if (unit === 'mg') return weight / 1000;
+            if (unit === 'kg') return weight * 1000;
+            return weight; 
+        }
+
+        function calculateTotalValue() {
+            const rawWeight = parseFloat(document.getElementById('valWeight').value) || 0;
+            const unit = document.getElementById('valUnit').value;
+            const rate = parseFloat(document.getElementById('valRate').value) || 0;
+            const making = parseFloat(document.getElementById('valMaking').value) || 0;
+            const wastagePercent = parseFloat(document.getElementById('valWastage').value) || 0;
+            const gstPercent = parseFloat(document.getElementById('valGst').value) || 0;
+            const oldGold = parseFloat(document.getElementById('valOldGold').value) || 0;
+
+            if (rawWeight <= 0 || rate <= 0) {
+                alert("Please enter a valid weight and current market rate.");
+                return;
+            }
+
+            const weightInGrams = getWeightInGrams(rawWeight, unit);
+            
+            const baseValue = weightInGrams * rate;
+            const wastageCost = baseValue * (wastagePercent / 100);
+            const subtotalBeforeTax = baseValue + wastageCost + making;
+            const gstValue = subtotalBeforeTax * (gstPercent / 100);
+            const grossTotal = subtotalBeforeTax + gstValue;
+            const finalPayable = grossTotal - oldGold;
+
+            document.getElementById('resBase').innerText = `₹${baseValue.toFixed(2)}`;
+            document.getElementById('resWastageCost').innerText = `₹${wastageCost.toFixed(2)}`;
+            document.getElementById('resMaking').innerText = `₹${making.toFixed(2)}`;
+            document.getElementById('resGst').innerText = `₹${gstValue.toFixed(2)}`;
+            document.getElementById('resOld').innerText = `-₹${oldGold.toFixed(2)}`;
+            document.getElementById('resFinal').innerText = `₹${Math.max(0, finalPayable).toFixed(2)}`;
+
+            document.getElementById('valueResult').classList.remove('hidden');
+        }
+
+        function calculatePureWastage() {
+            const weight = parseFloat(document.getElementById('wasteWeight').value) || 0;
+            const unit = document.getElementById('wasteUnit').value;
+            const percent = parseFloat(document.getElementById('wastePercent').value) || 0;
+
+            if (weight <= 0 || percent <= 0) {
+                alert("Please fill in both weight and wastage percentage variables.");
+                return;
+            }
+
+            const pureWastageWeight = weight * (percent / 100);
+            const combinedTotalWeight = weight + pureWastageWeight;
+
+            document.getElementById('resWasteWeight').innerText = pureWastageWeight.toFixed(3);
+            document.getElementById('resWasteUnitLabel').innerText = unit;
+            document.getElementById('resTotalWeightCombined').innerText = `Total Billing Weight: ${(combinedTotalWeight).toFixed(3)} ${unit}`;
+
+            document.getElementById('wastageResult').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
