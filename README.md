@@ -1,1 +1,1 @@
-# ---
+# Gold/silver price detector
